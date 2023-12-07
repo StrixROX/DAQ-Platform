@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
-import styles from '@/styles/home.module.css'
+import styles from '@/styles/Home.module.css'
 
 function delay(duration) {
   return new Promise((resolve) => {
