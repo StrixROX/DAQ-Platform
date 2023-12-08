@@ -9,10 +9,10 @@ function validate(data) {
 }
 
 function generateBlob(sensorId, data) {
-  let out = [`Elapsed Time (s), ${sensorId}\n`]
+  let out = [`Time (s), Elapsed Time (s), ${sensorId}\n`]
 
   for (const el of data) {
-    out.push(`${el.elapsedTime}, ${el.data}\n`)
+    out.push(`${el.time}, ${el.elapsedTime}, ${el.data}\n`)
   }
 
   return new Blob(out, { type: "text/csv" })
