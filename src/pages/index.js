@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import io from 'socket.io-client'
 import { LineChart, Line, XAxis, YAxis, Legend, Label, ResponsiveContainer } from 'recharts'
 
@@ -40,29 +40,27 @@ export default function Home() {
 
           socket.on('message', (message) => {
             if (validate(message)) {
+              const sensorId = message.sensorId
+
               setGroupedData(prev => {
-                const newGroups = { ...prev }
+                const startTime = prev.hasOwnProperty(sensorId) ? prev[sensorId].startTime : message.time
+                const elapsedTime = (message.time - startTime) / 1000 // seconds
+                
+                message.elapsedTime = elapsedTime
 
-                if (!newGroups[message.sensorId]) {
-                  newGroups[message.sensorId] = {
-                    startTime: message.time,
-                    data: [{ ...message, elapsedTime: 0 }]
-                  }
-                }
-                else {
-                  message['elapsedTime'] = (message.time - newGroups[message.sensorId].startTime) / 1000
-
-                  let newData = [...newGroups[message.sensorId].data]
-                  newData.push(message)
-
-                  if (newData.length > windowSize) {
-                    newData = newData.slice(1)
-                  }
-
-                  newGroups[message.sensorId].data = newData
+                let newData = prev.hasOwnProperty(sensorId) ? [...prev[sensorId].data, message] : [message]
+                
+                if (newData.length > windowSize) {
+                  newData = newData.slice(1)
                 }
 
-                return newGroups
+                const out = { ...prev }
+                out[sensorId] = {
+                  startTime,
+                  data: newData
+                }
+
+                return out
               })
             }
           })
@@ -78,7 +76,7 @@ export default function Home() {
 
   useEffect(() => connect(), [])
 
-  function downloadData(sensorId, data) {
+  const downloadData = useCallback((sensorId, data) => {
     const blob = generateBlob(sensorId, data)
 
     const el = document.createElement('a')
@@ -86,7 +84,7 @@ export default function Home() {
     el.setAttribute('download', `${sensorId}.csv`)
     el.click()
     el.remove()
-  }
+  }, [])
 
   return (
     <>
@@ -125,7 +123,7 @@ export default function Home() {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* <pre>{JSON.stringify(groupedData['sensor1'], null, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(groupedData, null, 2)}</pre> */}
     </>
   )
 }
