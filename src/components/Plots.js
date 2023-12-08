@@ -1,6 +1,9 @@
+import { useSensorData } from '@/context/SensorDataContext'
 import { VictoryChart, VictoryLine, VictoryScatter, VictoryTheme, VictoryAxis, VictoryLabel, VictoryLegend } from 'victory'
 
-export default function Plots({ groupedData }) {
+export default function Plots() {
+  const sensorData = useSensorData()
+
   return (
     <>
       <VictoryChart theme={VictoryTheme.material} height={300} width={1000}>
@@ -10,7 +13,7 @@ export default function Plots({ groupedData }) {
             data: { stroke: "#8884d8", strokeWidth: 0.8 },
             parent: { border: "1px solid #ccc" }
           }}
-          data={groupedData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+          data={sensorData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
         />
         <VictoryLine
           name="sensor2"
@@ -18,7 +21,7 @@ export default function Plots({ groupedData }) {
             data: { stroke: "#ff4400", strokeWidth: 0.8 },
             parent: { border: "1px solid #ccc" }
           }}
-          data={groupedData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+          data={sensorData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
         />
         <VictoryLegend x={800} y={10}
           orientation="vertical"
@@ -51,7 +54,7 @@ export default function Plots({ groupedData }) {
             data: { stroke: "#8884d8", strokeWidth: 0.8 },
             parent: { border: "1px solid #ccc" }
           }}
-          data={groupedData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+          data={sensorData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
         />
         <VictoryLegend x={800} y={10}
           orientation="vertical"
@@ -84,7 +87,7 @@ export default function Plots({ groupedData }) {
             data: { stroke: "#ff4400", strokeWidth: 0.8 },
             parent: { border: "1px solid #ccc" }
           }}
-          data={groupedData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+          data={sensorData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
         />
         <VictoryLegend x={800} y={10}
           orientation="vertical"

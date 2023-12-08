@@ -4,6 +4,7 @@ import io from 'socket.io-client'
 import styles from '@/styles/Home.module.css'
 
 import Plots from '@/components/Plots'
+import { useSensorData, useUpdateSensorData, useClearSensorData } from '@/context/SensorDataContext'
 
 function validate(data) {
   return typeof (data?.time) === 'number' && typeof (data?.data) === 'number' && typeof (data?.sensorId) === 'string'
@@ -24,7 +25,9 @@ const windowSize = 20
 
 export default function Home() {
   const [connectionStatus, setConnectionStatus] = useState("Not connected")
-  const [groupedData, setGroupedData] = useState({})
+  const sensorData = useSensorData()
+  const updateSensorData = useUpdateSensorData()
+  const clearSensorData = useClearSensorData()
 
   function connect() {
     setConnectionStatus("Connecting...")
@@ -39,32 +42,7 @@ export default function Home() {
             setConnectionStatus("Connected")
           })
 
-          socket.on('message', (message) => {
-            if (validate(message)) {
-              const sensorId = message.sensorId
-
-              setGroupedData(prev => {
-                const startTime = prev.hasOwnProperty(sensorId) ? prev[sensorId].startTime : message.time
-                const elapsedTime = (message.time - startTime) / 1000 // seconds
-
-                message.elapsedTime = elapsedTime
-
-                let newData = prev.hasOwnProperty(sensorId) ? [...prev[sensorId].data, message] : [message]
-
-                if (newData.length > windowSize) {
-                  newData = newData.slice(1)
-                }
-
-                const out = { ...prev }
-                out[sensorId] = {
-                  startTime,
-                  data: newData
-                }
-
-                return out
-              })
-            }
-          })
+          socket.on('message', (message) => updateSensorData(message))
 
           socket.on('disconnect', () => {
             socket = null
@@ -92,17 +70,17 @@ export default function Home() {
       <h1 className={styles.heading}>DAQ Platform</h1>
       <p>{connectionStatus}</p>
       <button onClick={() => socket?.disconnect() || connect()}>connect/disonnect</button>
-      <button onClick={() => setGroupedData({})}>clear</button>
+      <button onClick={() => clearSensorData()}>clear</button>
 
-      {Object.keys(groupedData).map((sensorId, i) => {
+      {Object.keys(sensorData).map((sensorId, i) => {
         return (
-          <button onClick={() => downloadData(sensorId, groupedData[sensorId].data)}>
+          <button onClick={() => downloadData(sensorId, sensorData[sensorId].data)} key={i}>
             Download {sensorId}.csv
           </button>
         )
       })}
 
-      <Plots groupedData={groupedData} />
+      <Plots />
 
       {/* <pre>{JSON.stringify(groupedData, null, 2)}</pre> */}
     </>
