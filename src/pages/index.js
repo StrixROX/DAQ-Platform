@@ -4,12 +4,6 @@ import { LineChart, Line, XAxis, YAxis, Legend, Label, ResponsiveContainer } fro
 
 import styles from '@/styles/Home.module.css'
 
-function delay(duration) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, duration)
-  })
-}
-
 function validate(data) {
   return typeof (data?.time) === 'number' && typeof (data?.data) === 'number' && typeof (data?.sensorId) === 'string'
 }
@@ -35,7 +29,6 @@ export default function Home() {
     setConnectionStatus("Connecting...")
 
     fetch('/api/socket')
-      .then(() => delay(2000))
       .then(() => {
 
         if (!socket) {
