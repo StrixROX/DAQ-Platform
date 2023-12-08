@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import { LineChart, Line, XAxis, YAxis, Legend, Label, ResponsiveContainer } from 'recharts'
@@ -16,8 +14,18 @@ function validate(data) {
   return typeof (data?.time) === 'number' && typeof (data?.data) === 'number' && typeof (data?.sensorId) === 'string'
 }
 
+function generateBlob(sensorId, data) {
+  let out = [`Elapsed Time (s), ${sensorId}\n`]
+
+  for (const el of data) {
+    out.push(`${el.elapsedTime}, ${el.data}\n`)
+  }
+
+  return new Blob(out, { type: "text/csv" })
+}
+
 let socket = null
-const windowSize = 200
+const windowSize = 100000
 
 export default function Home() {
   const [connectionStatus, setConnectionStatus] = useState("Not connected")
@@ -45,7 +53,7 @@ export default function Home() {
                 if (!newGroups[message.sensorId]) {
                   newGroups[message.sensorId] = {
                     startTime: message.time,
-                    data: [message]
+                    data: [{ ...message, elapsedTime: 0 }]
                   }
                 }
                 else {
@@ -77,12 +85,30 @@ export default function Home() {
 
   useEffect(() => connect(), [])
 
+  function downloadData(sensorId, data) {
+    const blob = generateBlob(sensorId, data)
+
+    const el = document.createElement('a')
+    el.setAttribute('href', URL.createObjectURL(blob))
+    el.setAttribute('download', `${sensorId}.csv`)
+    el.click()
+    el.remove()
+  }
+
   return (
     <>
       <h1 className={styles.heading}>DAQ Platform</h1>
       <p>{connectionStatus}</p>
       <button onClick={() => socket?.disconnect() || connect()}>connect/disonnect</button>
       <button onClick={() => setGroupedData({})}>clear</button>
+
+      {Object.keys(groupedData).map((sensorId, i) => {
+        return (
+          <button onClick={() => downloadData(sensorId, groupedData[sensorId].data)}>
+            Download {sensorId}.csv
+          </button>
+        )
+      })}
 
       <ResponsiveContainer width="100%" height={400} >
         <LineChart margin={{ "top": 25, "bottom": 25, "left": 25, "right": 25 }} data={groupedData['sensor1']?.data ?? [null]}>
