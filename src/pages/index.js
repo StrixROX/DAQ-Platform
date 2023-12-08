@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import io from 'socket.io-client'
-import { LineChart, Line, XAxis, YAxis, Legend, Label, ResponsiveContainer } from 'recharts'
+import { VictoryChart, VictoryLine, VictoryScatter, VictoryTheme, VictoryAxis, VictoryLabel, VictoryLegend } from 'victory'
 
 import styles from '@/styles/Home.module.css'
 
@@ -19,7 +19,7 @@ function generateBlob(sensorId, data) {
 }
 
 let socket = null
-const windowSize = 100000
+const windowSize = 20
 
 export default function Home() {
   const [connectionStatus, setConnectionStatus] = useState("Not connected")
@@ -45,11 +45,11 @@ export default function Home() {
               setGroupedData(prev => {
                 const startTime = prev.hasOwnProperty(sensorId) ? prev[sensorId].startTime : message.time
                 const elapsedTime = (message.time - startTime) / 1000 // seconds
-                
+
                 message.elapsedTime = elapsedTime
 
                 let newData = prev.hasOwnProperty(sensorId) ? [...prev[sensorId].data, message] : [message]
-                
+
                 if (newData.length > windowSize) {
                   newData = newData.slice(1)
                 }
@@ -101,29 +101,116 @@ export default function Home() {
         )
       })}
 
-      <ResponsiveContainer width="100%" height={400} >
-        <LineChart margin={{ "top": 25, "bottom": 25, "left": 25, "right": 25 }} data={groupedData['sensor1']?.data ?? [null]}>
-          <Line name="sensor1" type="linear" dataKey="data" stroke="#8884d8" dot={false} activeDot={true} isAnimationActive={false} />
-          <XAxis dataKey="elapsedTime">
-            <Label value="Time elapsed (s)" offset={10} position="bottom" />
-          </XAxis>
-          <YAxis dataKey="data" />
-          <Legend layout="vertical" align="right" verticalAlign="top" />
-        </LineChart>
-      </ResponsiveContainer>
+      <VictoryChart theme={VictoryTheme.material} height={300} width={1000}>
+        <VictoryLine
+          name="sensor1"
+          style={{
+            data: { stroke: "#8884d8", strokeWidth: 0.8 },
+            parent: { border: "1px solid #ccc" }
+          }}
+          data={groupedData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+        />
+        <VictoryLine
+          name="sensor2"
+          style={{
+            data: { stroke: "#ff4400", strokeWidth: 0.8 },
+            parent: { border: "1px solid #ccc" }
+          }}
+          data={groupedData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+        />
+        <VictoryLegend x={800} y={10}
+          orientation="vertical"
+          gutter={20}
+          style={{ border: { stroke: "black" } }}
+          colorScale={["#8884d8", "#ff4400"]}
+          data={[
+            { name: "sensor1" }, { name: "sensor2" }
+          ]}
+        />
+        <VictoryAxis
+          width={400}
+          height={400}
+          theme={VictoryTheme.material}
+          label="Time Elapsed (s)"
+          axisLabelComponent={<VictoryLabel dy={20}/>}
+          standalone={false}
+        />
+        <VictoryAxis dependentAxis
+          theme={VictoryTheme.material}
+          label="Sensor Reading"
+          axisLabelComponent={<VictoryLabel dy={-25}/>}
+          standalone={false}
+        />
+      </VictoryChart>
 
-      <ResponsiveContainer width="100%" height={400} >
-        <LineChart margin={{ "top": 25, "bottom": 25, "left": 25, "right": 25 }} data={groupedData['sensor2']?.data ?? [null]}>
-          <Line name="sensor2" type="linear" dataKey="data" stroke="#8884d8" dot={false} activeDot={true} isAnimationActive={false} />
-          <XAxis dataKey="elapsedTime">
-            <Label value="Time elapsed (s)" offset={10} position="bottom" />
-          </XAxis>
-          <YAxis dataKey="data" />
-          <Legend layout="vertical" align="right" verticalAlign="top" />
-        </LineChart>
-      </ResponsiveContainer>
+      <VictoryChart theme={VictoryTheme.material} height={300} width={1000}>
+        <VictoryLine
+          style={{
+            data: { stroke: "#8884d8", strokeWidth: 0.8 },
+            parent: { border: "1px solid #ccc" }
+          }}
+          data={groupedData['sensor1']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+        />
+        <VictoryLegend x={800} y={10}
+          orientation="vertical"
+          gutter={20}
+          style={{ border: { stroke: "black" } }}
+          colorScale={["#8884d8"]}
+          data={[
+            { name: "sensor1" }
+          ]}
+        />
+        <VictoryAxis
+          width={400}
+          height={400}
+          theme={VictoryTheme.material}
+          label="Time Elapsed (s)"
+          axisLabelComponent={<VictoryLabel dy={20}/>}
+          standalone={false}
+        />
+        <VictoryAxis dependentAxis
+          theme={VictoryTheme.material}
+          label="Sensor Reading"
+          axisLabelComponent={<VictoryLabel dy={-25}/>}
+          standalone={false}
+        />
+      </VictoryChart>
+
+      <VictoryChart theme={VictoryTheme.material} height={300} width={1000}>
+        <VictoryLine
+          style={{
+            data: { stroke: "#ff4400", strokeWidth: 0.8 },
+            parent: { border: "1px solid #ccc" }
+          }}
+          data={groupedData['sensor2']?.data?.reduce((acc, val) => [...acc, { x: val.elapsedTime, y: val.data }], [])}
+        />
+        <VictoryLegend x={800} y={10}
+          orientation="vertical"
+          gutter={20}
+          style={{ border: { stroke: "black" } }}
+          colorScale={["#ff4400"]}
+          data={[
+            { name: "sensor2" }
+          ]}
+        />
+        <VictoryAxis
+          width={400}
+          height={400}
+          theme={VictoryTheme.material}
+          label="Time Elapsed (s)"
+          axisLabelComponent={<VictoryLabel dy={20}/>}
+          standalone={false}
+        />
+        <VictoryAxis dependentAxis
+          theme={VictoryTheme.material}
+          label="Sensor Reading"
+          axisLabelComponent={<VictoryLabel dy={-25}/>}
+          standalone={false}
+        />
+      </VictoryChart>
 
       {/* <pre>{JSON.stringify(groupedData, null, 2)}</pre> */}
     </>
+
   )
 }

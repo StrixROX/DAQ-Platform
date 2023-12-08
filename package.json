@@ -12,8 +12,8 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "recharts": "^2.10.3",
     "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "victory": "^36.7.0"
   }
 }
