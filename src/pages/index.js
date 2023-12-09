@@ -15,14 +15,14 @@ export default function Home() {
   const updateSensorData = useUpdateSensorData()
   const clearSensorData = useClearSensorData()
 
-  function connect() {
+  function connectWebsocket() {
     setConnectionStatus("Connecting...")
 
     fetch('/api/socket')
       .then(() => {
 
         if (!socket) {
-          socket = io()
+          socket = io(global.io)
 
           socket.on('connect', () => {
             setConnectionStatus("Connected")
@@ -39,13 +39,13 @@ export default function Home() {
       })
   }
 
-  useEffect(() => connect(), [])
+  useEffect(() => connectWebsocket(), [])
 
   return (
     <>
       <h1 className={styles.heading}>DAQ Platform</h1>
       <p>{connectionStatus}</p>
-      <button onClick={() => socket?.disconnect() || connect()}>connect/disonnect</button>
+      <button onClick={() => socket?.disconnect() || connectWebsocket()}>connect/disonnect</button>
       <button onClick={() => clearSensorData()}>clear</button>
 
       {
