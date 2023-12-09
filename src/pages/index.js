@@ -12,7 +12,7 @@ import DownloadDataButton from '@/components/DownloadDataButton'
 let socket = null
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(true)
+  const [darkMode, setDarkMode] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState(0)
 
   const sensorData = useSensorData()
