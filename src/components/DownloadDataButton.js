@@ -10,7 +10,7 @@ function generateCSVBlob(sensorId, data) {
   return new Blob(out, { type: "text/csv" })
 }
 
-export default function DownloadDataButton({ sensorID, data }) {
+export default function DownloadDataButton({ sensorID, data, styles }) {
   if (!data) {
     return null
   }
@@ -29,7 +29,7 @@ export default function DownloadDataButton({ sensorID, data }) {
   }, [])
 
   return (
-    <button onClick={() => downloadData(sensorID, data)}>
+    <button className={styles} onClick={() => downloadData(sensorID, data)}>
       Download {filename}
     </button>
   )

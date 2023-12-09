@@ -1,5 +1,6 @@
 .header, .plotsWrapper {
   padding: 2em 5%;
+  background-color: #373737;
 }
 
 .header {
@@ -7,8 +8,6 @@
   position: sticky;
   top: 0;
   justify-content: space-between;
-  background-color: #ffffffc2;
-  backdrop-filter: blur(3px);
   z-index: 1;
 }
 
@@ -16,14 +15,14 @@
   font-family: Montserrat;
   font-weight: 800;
   font-size: 2.5em;
-  color: black;
+  color: white;
   margin: 0;
 }
 
 .subheading {
   font-size: 1.2em;
   font-weight: 300;
-  color: #aaaaaa;
+  color: #898989;
   margin: 0;
 }
 
@@ -43,6 +42,10 @@
   color: #32cd32ff;
 }
 
+.isNotConnected {
+  color: #9e9e9e;
+}
+
 .isConnected::before {
   content: '';
   display: inline-block;
@@ -52,7 +55,7 @@
   border-radius: 100%;
   border: 2px solid transparent;
   background-color: #32cd32ff;
-  box-shadow: 0 0 0 4px #32cd323e;
+  box-shadow: 0 0 0 4px #32cd3260;
 }
 
 .isNotConnected::before {
@@ -62,8 +65,8 @@
   width: 0.5em;
   height: 0.5em;
   border-radius: 100%;
-  border: 2px solid #d6d6d6;
-  background-color: #d6d6d6;
+  border: 2px solid #696969;
+  background-color: #696969;
   box-shadow: 0 0 0 4px transparent;
 }
 
@@ -71,20 +74,20 @@
   padding: 0.5em 1.5em;
   border: none;
   border-radius: 8px;
-  background-color: #e8e8e8;
+  background-color: #f0f0f0;
   cursor: pointer;
   outline: none;
 }
 
 .button:active, .button:focus {
-  box-shadow: 0 0 0 4px #e8e8e842;
+  box-shadow: 0 0 0 4px #f0f0f063;
 }
 
 .downloadButton {
   color: white;
-  background-color: #1c5be1;
+  background-color: #3970e9;
 }
 
 .downloadButton:active, .downloadButton:focus {
-  box-shadow: 0 0 0 4px #1c5ae133;
+  box-shadow: 0 0 0 4px #1c5ae194;
 }

@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         <title>DAQ Platform</title>
-        <meta name="description" content="A real-time monitoring DAQ platform" />
+        <meta name="description" content="A real-time sensor data monitoring platform" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
