@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 
-const WINDOW_SIZE = 20
+const WINDOW_SIZE = Number(process.env.REACT_APP_WINDOW_SIZE) || 20
 
 const SensorDataContext = createContext()
 const UpdateSensorDataContext = createContext()
