@@ -89,3 +89,18 @@
 .downloadButton:active, .downloadButton:focus {
   box-shadow: 0 0 0 4px #1c5ae133;
 }
+
+.inputBox {
+  padding: 0.5em 1.5em;
+  border-radius: 8px;
+  border: 1px solid #cecece;
+  outline: none;
+}
+
+.inputBox:active, .inputBox:focus {
+  box-shadow: 0 0 0 4px #cecece42;
+}
+
+.text {
+  color: #aaaaaa;
+}

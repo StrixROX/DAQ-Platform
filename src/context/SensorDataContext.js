@@ -1,7 +1,5 @@
 import { createContext, useContext, useState } from 'react'
 
-const WINDOW_SIZE = Number(process.env.NEXT_PUBLIC_WINDOW_SIZE) || 20
-
 const SensorDataContext = createContext()
 const UpdateSensorDataContext = createContext()
 const ClearSensorDataContext = createContext()
@@ -27,7 +25,7 @@ let startTime = null
 export default function SensorDataProvider({ children }) {
   const [groupedSensorData, setGroupedSensorData] = useState({})
 
-  function updateSensorData(message) {
+  function updateSensorData(windowSize, message) {
     if (validate(message)) {
       const sensorId = message.sensorId
       startTime = startTime ?? message.time
@@ -37,7 +35,7 @@ export default function SensorDataProvider({ children }) {
 
         let newData = prev?.hasOwnProperty(sensorId) ? [...prev[sensorId].data, message] : [message]
 
-        if (newData.length > WINDOW_SIZE) {
+        while (newData.length > windowSize) {
           newData = newData.slice(1)
         }
 

@@ -43,7 +43,7 @@ export default function Home() {
             setConnectionStatus(1)
           })
 
-          socket.on('message', (message) => updateSensorData(message))
+          socket.on('message', (message) => updateSensorData(Number(document.getElementById('windowSize').value), message))
 
           socket.on('disconnect', () => {
             socket = null
@@ -73,6 +73,7 @@ export default function Home() {
               })
             }
           </div>
+          <span className={styles.text}>Sample Size: </span><input type="number" className={styles.inputBox} id="windowSize" defaultValue={20} />
         </div>
         <div className={styles.connectionSettings}>
           <p align="center" className={connectionStatus === 1 ? styles.isConnected : styles.isNotConnected}>{connectionStatusNames[connectionStatus]}</p>
