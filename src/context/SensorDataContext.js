@@ -22,17 +22,18 @@ function validate(data) {
   return typeof (data?.time) === 'number' && typeof (data?.data) === 'number' && typeof (data?.sensorId) === 'string'
 }
 
+let startTime = null
+
 export default function SensorDataProvider({ children }) {
   const [groupedSensorData, setGroupedSensorData] = useState({})
 
   function updateSensorData(message) {
     if (validate(message)) {
       const sensorId = message.sensorId
+      startTime = startTime ?? message.time
+      message.elapsedTime = (message.time - startTime) / 1000 // seconds
 
       setGroupedSensorData(prev => {
-        const startTime = prev?.hasOwnProperty(sensorId) ? prev[sensorId].startTime : message.time
-
-        message.elapsedTime = (message.time - startTime) / 1000 // seconds
 
         let newData = prev?.hasOwnProperty(sensorId) ? [...prev[sensorId].data, message] : [message]
 
@@ -42,7 +43,6 @@ export default function SensorDataProvider({ children }) {
 
         const out = { ...prev }
         out[sensorId] = {
-          startTime,
           data: newData
         }
 
@@ -50,11 +50,16 @@ export default function SensorDataProvider({ children }) {
       })
     }
   }
+  
+  function clearSensorData() {
+    startTime = null
+    setGroupedSensorData({})
+  }
 
   return (
     <SensorDataContext.Provider value={groupedSensorData}>
       <UpdateSensorDataContext.Provider value={updateSensorData}>
-        <ClearSensorDataContext.Provider value={() => setGroupedSensorData({})}>
+        <ClearSensorDataContext.Provider value={clearSensorData}>
           {children}
         </ClearSensorDataContext.Provider>
       </UpdateSensorDataContext.Provider>
