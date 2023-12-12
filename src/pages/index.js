@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
 import lightStyles from '@/styles/Home.module.css'
@@ -6,28 +6,28 @@ import darkStyles from '@/styles/Home.dark.module.css'
 
 import { useSensorData, useUpdateSensorData, useClearSensorData } from '@/context/SensorDataContext'
 import Plots from '@/components/Plots'
-import PlotsDark from '@/components/Plots.Dark'
 import DownloadDataButton from '@/components/DownloadDataButton'
+import { useDarkMode, useToggleDarkMode } from '@/context/DarkModeContext'
 
 let socket = null
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState(0)
+  
+  const darkMode = useDarkMode()
+  const toggleDarkMode = useToggleDarkMode()
 
   const sensorData = useSensorData()
   const updateSensorData = useUpdateSensorData()
   const clearSensorData = useClearSensorData()
 
-  const styles = useMemo(() => darkMode ? darkStyles : lightStyles, [darkMode])
+  const styles = darkMode ? darkStyles : lightStyles
 
   const connectionStatusNames = {
     0: "Not connected",
     1: "Connected",
     2: "Connecting..."
   }
-
-  const toggleDarkMode = () => setDarkMode(prev => !prev)
 
   function connectWebsocket() {
     setConnectionStatus(2)
@@ -83,7 +83,7 @@ export default function Home() {
       </header>
 
       <div className={styles.plotsWrapper}>
-        {darkMode ? <PlotsDark /> : <Plots />}
+        <Plots />
       </div>
 
       {/* <pre>{JSON.stringify(groupedData, null, 2)}</pre> */}

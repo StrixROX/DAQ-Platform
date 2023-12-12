@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import Head from 'next/head'
 
 import SensorDataProvider from '@/context/SensorDataContext'
+import DarkModeProvider from '@/context/DarkModeContext'
 
 export default function App({ Component, pageProps }) {
   return (
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SensorDataProvider>
-        <Component {...pageProps} />
+        <DarkModeProvider>
+          <Component {...pageProps} />
+        </DarkModeProvider>
       </SensorDataProvider>
     </>
   )
