@@ -16,10 +16,10 @@ function ChartWrapper({ legend, colorScale, children }) {
     <VictoryChart theme={VictoryTheme.material} height={300} width={1000}>
       {children}
 
-      <VictoryLegend x={800} y={10}
+      <VictoryLegend x={800} y={2}
         orientation="vertical"
         gutter={20}
-        style={{ border: { stroke: "black" } }}
+        style={{ border: { stroke: darkMode ? "#c9c9c9" : "black" }, labels: { fill: darkMode ? "#c9c9c9" : "black" } }}
         colorScale={colorScale}
         data={legend.map(el => ({ name: el }))}
       />
