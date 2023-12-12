@@ -50,6 +50,9 @@ export default function Home() {
             setConnectionStatus(0)
           })
         }
+        else {
+          setConnectionStatus(1)
+        }
 
       })
   }
