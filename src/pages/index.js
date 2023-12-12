@@ -13,7 +13,7 @@ let socket = null
 
 export default function Home() {
   const [connectionStatus, setConnectionStatus] = useState(0)
-  
+
   const darkMode = useDarkMode()
   const toggleDarkMode = useToggleDarkMode()
 
@@ -61,30 +61,32 @@ export default function Home() {
 
   return (
     <>
-      <header className={styles.header}>
-        <div>
-          <h1 className={styles.heading}>DAQ Platform</h1>
-          <h3 className={styles.subheading}>A real-time sensor data monitoring platform</h3>
-          <div className={styles.downloadBar}>
-            <a href="/testfile.html" download="testfile.html"><button className={styles.downloadButton}>Downlad testfile.html</button></a>
-            {
-              Object.keys(sensorData).sort().map((sensorId, i) => {
-                return <DownloadDataButton sensorID={sensorId} data={sensorData[sensorId].data} styles={styles.downloadButton} key={i} />
-              })
-            }
+      <div className={styles.pageWrapper}>
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.heading}>DAQ Platform</h1>
+            <h3 className={styles.subheading}>A real-time sensor data monitoring platform</h3>
+            <div className={styles.downloadBar}>
+              <a href="/testfile.html" download="testfile.html"><button className={styles.downloadButton}>Downlad testfile.html</button></a>
+              {
+                Object.keys(sensorData).sort().map((sensorId, i) => {
+                  return <DownloadDataButton sensorID={sensorId} data={sensorData[sensorId].data} styles={styles.downloadButton} key={i} />
+                })
+              }
+            </div>
+            <span className={styles.text}>Sample Size: </span><input type="number" className={styles.inputBox} id="windowSize" defaultValue={20} />
           </div>
-          <span className={styles.text}>Sample Size: </span><input type="number" className={styles.inputBox} id="windowSize" defaultValue={20} />
-        </div>
-        <div className={styles.connectionSettings}>
-          <p align="center" className={connectionStatus === 1 ? styles.isConnected : styles.isNotConnected}>{connectionStatusNames[connectionStatus]}</p>
-          <button className={styles.button} onClick={() => socket?.disconnect() || connectWebsocket()}>Connect/Disonnect</button>
-          <button className={styles.button} onClick={() => toggleDarkMode()}>Dark Mode</button>
-          <button className={styles.button} onClick={() => clearSensorData()}>Reset</button>
-        </div>
-      </header>
+          <div className={styles.connectionSettings}>
+            <p align="center" className={connectionStatus === 1 ? styles.isConnected : styles.isNotConnected}>{connectionStatusNames[connectionStatus]}</p>
+            <button className={styles.button} onClick={() => socket?.disconnect() || connectWebsocket()}>Connect/Disonnect</button>
+            <button className={styles.button} onClick={() => toggleDarkMode()}>Dark Mode</button>
+            <button className={styles.button} onClick={() => clearSensorData()}>Reset</button>
+          </div>
+        </header>
 
-      <div className={styles.plotsWrapper}>
-        <Plots />
+        <div className={styles.plotsWrapper}>
+          <Plots />
+        </div>
       </div>
 
       {/* <pre>{JSON.stringify(groupedData, null, 2)}</pre> */}
