@@ -66,6 +66,7 @@ export default function Home() {
           <h1 className={styles.heading}>DAQ Platform</h1>
           <h3 className={styles.subheading}>A real-time sensor data monitoring platform</h3>
           <div className={styles.downloadBar}>
+            <a href="/testfile.html" download="testfile.html"><button className={styles.downloadButton}>Downlad testfile.html</button></a>
             {
               Object.keys(sensorData).sort().map((sensorId, i) => {
                 return <DownloadDataButton sensorID={sensorId} data={sensorData[sensorId].data} styles={styles.downloadButton} key={i} />

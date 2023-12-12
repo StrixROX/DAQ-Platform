@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test DAQ</title>
+</head>
+
+<body style="background-color: #242424; color: white">
+  <button onclick="sendreq()">Send Req</button> <br>
+  <button onclick="sendreq_auto()">Send Req (auto)</button> <br>
+  sensorId : <input type="text" id="sensorId" value="sensor1">
+  <!-- data : <input type="number" id="data" value="102"> <br> -->
+  <pre id="output"></pre>
+
+  <script>
+    let count = 0
+    function sendreq() {
+      fetch('https://daq-platform.onrender.com/api/receiver', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          time: Date.now(),
+          sensorId: document.getElementById('sensorId').value,
+          data: Math.floor(Math.random() * 100),
+          // data: Number(document.getElementById('data').value),
+        })
+      })
+        .then(res => res.json())
+        .then(res => {
+          document.getElementById('output').innerHTML = JSON.stringify(res,null,2);
+          count += 1
+          console.log(count)
+        })
+    }
+
+    let interval = null
+    function sendreq_auto() {
+      if (interval) {
+        clearInterval(interval)
+        interval = null
+      } else {
+        interval = setInterval(() => sendreq(), 100)
+      }
+
+    }
+  </script>
+</body>
+
+</html>
