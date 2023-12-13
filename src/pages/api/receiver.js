@@ -1,31 +1,43 @@
 const validSensorIds = ['sensor1', 'sensor2']
 
-export default function Receiver(req, res) {
-  if (global.io && validSensorIds.indexOf(req.body.sensorId) !== -1) {
+function handleMessage(message) {
+  let res = {}
 
-    global.io.emit('message', req.body)
+  if (global.io && validSensorIds.indexOf(message.sensorId) !== -1) {
 
-    res.send({
-      time: Date.now(),
-      data: "Server got " + req.body.data + " from " + req.body.sensorId
-    })
+    global.io.emit('message', message)
+
+    res.time = Date.now()
+    res.data = "Server got " + message.data + " from " + message.sensorId
 
   }
   else {
-
-    let msg = []
+    
+    let msg = ""
 
     if (!global.io) {
-      msg.push("Server offline")
+      msg += " | Server offline"
     }
-    if (validSensorIds.indexOf(req.body.sensorId) === -1) {
-      msg.push("Invalid sensor id")
+    if (validSensorIds.indexOf(message.sensorId) !== -1) {
+      msg += " | Invalid sensor id"
     }
 
-    res.send({
-      time: Date.now(),
-      data: msg.join(' | ') || "Some error occurred"
-    })
+    msg = msg.slice(3)
+
+    res.time = Date.now()
+    res.data = msg || "Some error occured"
 
   }
+
+  return res
+}
+
+export default function Receiver(req, res) {
+
+  const messageList = Array.isArray(req.body) ? req.body : [req.body]
+
+  const outputs = messageList.map(el => handleMessage(el))
+
+  res.send(outputs)
+
 }
